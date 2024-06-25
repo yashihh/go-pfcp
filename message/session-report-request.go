@@ -23,7 +23,7 @@ type SessionReportRequest struct {
 	PFCPSRReqFlags                    *ie.IE
 	OldCPFSEID                        *ie.IE
 	PacketRateStatusReport            *ie.IE
-	PortManagementInformationForTSC   *ie.IE
+	TSCManagementInformation          []*ie.IE
 	SessionReport                     []*ie.IE
 	IEs                               []*ie.IE
 }
@@ -61,7 +61,7 @@ func NewSessionReportRequest(mp, fo uint8, seid uint64, seq uint32, pri uint8, i
 		case ie.PacketRateStatusReport:
 			m.PacketRateStatusReport = i
 		case ie.PortManagementInformationForTSCWithinSessionReportRequest:
-			m.PortManagementInformationForTSC = i
+			m.TSCManagementInformation = append(m.TSCManagementInformation, i)
 		case ie.SessionReport:
 			m.SessionReport = append(m.SessionReport, i)
 		default:
@@ -151,7 +151,7 @@ func (m *SessionReportRequest) MarshalTo(b []byte) error {
 		}
 		offset += i.MarshalLen()
 	}
-	if i := m.PortManagementInformationForTSC; i != nil {
+	for _, i := range m.TSCManagementInformation {
 		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
 			return err
 		}
@@ -226,7 +226,7 @@ func (m *SessionReportRequest) UnmarshalBinary(b []byte) error {
 		case ie.PacketRateStatusReport:
 			m.PacketRateStatusReport = i
 		case ie.PortManagementInformationForTSCWithinSessionReportRequest:
-			m.PortManagementInformationForTSC = i
+			m.TSCManagementInformation = append(m.TSCManagementInformation, i)
 		case ie.SessionReport:
 			m.SessionReport = append(m.SessionReport, i)
 		default:
@@ -271,7 +271,7 @@ func (m *SessionReportRequest) MarshalLen() int {
 	if i := m.PacketRateStatusReport; i != nil {
 		l += i.MarshalLen()
 	}
-	if i := m.PortManagementInformationForTSC; i != nil {
+	for _, i := range m.TSCManagementInformation {
 		l += i.MarshalLen()
 	}
 	for _, i := range m.SessionReport {

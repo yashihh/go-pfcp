@@ -5,8 +5,8 @@
 package ie
 
 // NewReportType creates a new ReportType IE.
-func NewReportType(upir, erir, usar, dldr int) *IE {
-	return newUint8ValIE(ReportType, uint8((upir<<3)|(erir<<2)|(usar<<1)|(dldr)))
+func NewReportType(tmir, upir, erir, usar, dldr int) *IE {
+	return newUint8ValIE(ReportType, uint8((tmir<<4)|(upir<<3)|(erir<<2)|(usar<<1)|(dldr)))
 }
 
 // ReportType returns ReportType in uint8 if the type of IE matches.
@@ -16,6 +16,16 @@ func (i *IE) ReportType() (uint8, error) {
 	}
 
 	return i.ValueAsUint8()
+}
+
+// HasUPIR reports whether an IE has UPIR bit.
+func (i *IE) HasTMIR() bool {
+	v, err := i.ReportType()
+	if err != nil {
+		return false
+	}
+
+	return has5thBit(v)
 }
 
 // HasUPIR reports whether an IE has UPIR bit.
