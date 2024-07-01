@@ -1,4 +1,4 @@
-// Copyright 2019-2024 go-pfcp authors. All rights reserved.
+// Copyright 2019-2022 go-pfcp authors. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
@@ -157,7 +157,6 @@ func (f *MACAddressFields) UnmarshalBinary(b []byte) error {
 		if l < offset+6 {
 			return io.ErrUnexpectedEOF
 		}
-		f.SourceMACAddress = make(net.HardwareAddr, 6)
 		copy(f.SourceMACAddress, b[offset:offset+6])
 		offset += 6
 	}
@@ -166,7 +165,6 @@ func (f *MACAddressFields) UnmarshalBinary(b []byte) error {
 		if l < offset+6 {
 			return io.ErrUnexpectedEOF
 		}
-		f.DestinationMACAddress = make(net.HardwareAddr, 6)
 		copy(f.DestinationMACAddress, b[offset:offset+6])
 		offset += 6
 	}
@@ -175,7 +173,6 @@ func (f *MACAddressFields) UnmarshalBinary(b []byte) error {
 		if l < offset+6 {
 			return io.ErrUnexpectedEOF
 		}
-		f.UpperSourceMACAddress = make(net.HardwareAddr, 6)
 		copy(f.UpperSourceMACAddress, b[offset:offset+6])
 		offset += 6
 	}
@@ -184,7 +181,6 @@ func (f *MACAddressFields) UnmarshalBinary(b []byte) error {
 		if l < offset+6 {
 			return io.ErrUnexpectedEOF
 		}
-		f.UpperDestinationMACAddress = make(net.HardwareAddr, 6)
 		copy(f.UpperDestinationMACAddress, b[offset:offset+6])
 	}
 

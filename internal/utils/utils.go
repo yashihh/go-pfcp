@@ -1,4 +1,4 @@
-// Copyright 2019-2024 go-pfcp authors. All rights reserved.
+// Copyright 2019-2022 go-pfcp authors. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
@@ -100,7 +100,8 @@ func EncodePLMN(mcc, mnc string) ([]byte, error) {
 	// 2-digit
 	b := make([]byte, 3)
 	if len(mnc) == 2 {
-		return append(c, n...), nil
+		b = append(c, n...)
+		return b, nil
 	}
 
 	// 3-digit

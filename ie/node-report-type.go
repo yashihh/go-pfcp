@@ -1,8 +1,12 @@
-// Copyright 2019-2024 go-pfcp authors. All rights reserved.
+// Copyright 2019-2022 go-pfcp authors. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
 package ie
+
+import (
+	"io"
+)
 
 // NewNodeReportType creates a new NodeReportType IE.
 func NewNodeReportType(flags uint8) *IE {
@@ -14,8 +18,11 @@ func (i *IE) NodeReportType() (uint8, error) {
 	if i.Type != NodeReportType {
 		return 0, &InvalidTypeError{Type: i.Type}
 	}
+	if len(i.Payload) < 1 {
+		return 0, io.ErrUnexpectedEOF
+	}
 
-	return i.ValueAsUint8()
+	return i.Payload[0], nil
 }
 
 // HasUPFR reports whether an IE has UPFR bit.

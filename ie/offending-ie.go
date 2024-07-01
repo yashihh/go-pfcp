@@ -1,8 +1,13 @@
-// Copyright 2019-2024 go-pfcp authors. All rights reserved.
+// Copyright 2019-2022 go-pfcp authors. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
 package ie
+
+import (
+	"encoding/binary"
+	"io"
+)
 
 // NewOffendingIE creates a new OffendingIE IE.
 func NewOffendingIE(itype uint16) *IE {
@@ -15,5 +20,9 @@ func (i *IE) OffendingIE() (uint16, error) {
 		return 0, &InvalidTypeError{Type: i.Type}
 	}
 
-	return i.ValueAsUint16()
+	if len(i.Payload) < 2 {
+		return 0, io.ErrUnexpectedEOF
+	}
+
+	return binary.BigEndian.Uint16(i.Payload[0:2]), nil
 }

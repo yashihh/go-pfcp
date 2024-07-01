@@ -1,10 +1,12 @@
-// Copyright 2019-2024 go-pfcp authors. All rights reserved.
+// Copyright 2019-2022 go-pfcp authors. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
 package ie
 
 import (
+	"encoding/binary"
+	"io"
 	"time"
 )
 
@@ -20,5 +22,8 @@ func (i *IE) RecoveryTimeStamp() (time.Time, error) {
 		return time.Time{}, &InvalidTypeError{Type: i.Type}
 	}
 
-	return i.valueAs3GPPTimestamp()
+	if len(i.Payload) < 4 {
+		return time.Time{}, io.ErrUnexpectedEOF
+	}
+	return time.Unix(int64(binary.BigEndian.Uint32(i.Payload[0:4])-2208988800), 0), nil
 }

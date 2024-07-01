@@ -1,8 +1,10 @@
-// Copyright 2019-2024 go-pfcp authors. All rights reserved.
+// Copyright 2019-2022 go-pfcp authors. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
 package ie
+
+import "io"
 
 // Interface definitions.
 const (
@@ -20,9 +22,13 @@ func NewSourceInterface(intf uint8) *IE {
 
 // SourceInterface returns SourceInterface in uint8 if the type of IE matches.
 func (i *IE) SourceInterface() (uint8, error) {
+	if len(i.Payload) < 1 {
+		return 0, io.ErrUnexpectedEOF
+	}
+
 	switch i.Type {
 	case SourceInterface:
-		return i.ValueAsUint8()
+		return i.Payload[0], nil
 	case CreatePDR:
 		ies, err := i.CreatePDR()
 		if err != nil {

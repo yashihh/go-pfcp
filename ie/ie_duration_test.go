@@ -1,4 +1,4 @@
-// Copyright 2019-2024 go-pfcp authors. All rights reserved.
+// Copyright 2019-2022 go-pfcp authors. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
@@ -287,27 +287,6 @@ func TestDurationIEs(t *testing.T) {
 			decoded:     10 * time.Second,
 			decoderFunc: func(i *ie.IE) (time.Duration, error) { return i.QuotaHoldingTime() },
 		}, {
-			description: "QuotaValidityTime",
-			structured:  ie.NewQuotaValidityTime(10 * time.Second),
-			decoded:     10 * time.Second,
-			decoderFunc: func(i *ie.IE) (time.Duration, error) { return i.QuotaValidityTime() },
-		}, {
-			description: "QuotaValidityTime/CreateURR",
-			structured: ie.NewCreateURR(
-				ie.NewURRID(0xffffffff),
-				ie.NewQuotaValidityTime(10*time.Second),
-			),
-			decoded:     10 * time.Second,
-			decoderFunc: func(i *ie.IE) (time.Duration, error) { return i.QuotaValidityTime() },
-		}, {
-			description: "QuotaValidityTime/UpdateURR",
-			structured: ie.NewUpdateURR(
-				ie.NewURRID(0xffffffff),
-				ie.NewQuotaValidityTime(10*time.Second),
-			),
-			decoded:     10 * time.Second,
-			decoderFunc: func(i *ie.IE) (time.Duration, error) { return i.QuotaValidityTime() },
-		}, {
 			description: "SubsequentTimeQuota",
 			structured:  ie.NewSubsequentTimeQuota(10 * time.Second),
 			decoded:     10 * time.Second,
@@ -336,35 +315,6 @@ func TestDurationIEs(t *testing.T) {
 			),
 			decoded:     10 * time.Second,
 			decoderFunc: func(i *ie.IE) (time.Duration, error) { return i.SubsequentTimeQuota() },
-		}, {
-			description: "SubsequentTimeThreshold",
-			structured:  ie.NewSubsequentTimeThreshold(10 * time.Second),
-			decoded:     10 * time.Second,
-			decoderFunc: func(i *ie.IE) (time.Duration, error) { return i.SubsequentTimeThreshold() },
-		}, {
-			description: "SubsequentTimeThreshold/CreateURR",
-			structured: ie.NewCreateURR(
-				ie.NewURRID(0xffffffff),
-				ie.NewSubsequentTimeThreshold(10*time.Second),
-			),
-			decoded:     10 * time.Second,
-			decoderFunc: func(i *ie.IE) (time.Duration, error) { return i.SubsequentTimeThreshold() },
-		}, {
-			description: "SubsequentTimeThreshold/UpdateURR",
-			structured: ie.NewUpdateURR(
-				ie.NewURRID(0xffffffff),
-				ie.NewSubsequentTimeThreshold(10*time.Second),
-			),
-			decoded:     10 * time.Second,
-			decoderFunc: func(i *ie.IE) (time.Duration, error) { return i.SubsequentTimeThreshold() },
-		}, {
-			description: "SubsequentTimeThreshold/AdditionalMonitoringTime",
-			structured: ie.NewAdditionalMonitoringTime(
-				ie.NewMonitoringTime(time.Date(2019, time.January, 1, 0, 0, 0, 0, time.UTC)),
-				ie.NewSubsequentTimeThreshold(10*time.Second),
-			),
-			decoded:     10 * time.Second,
-			decoderFunc: func(i *ie.IE) (time.Duration, error) { return i.SubsequentTimeThreshold() },
 		}, {
 			description: "TimeOffsetMeasurement",
 			structured:  ie.NewTimeOffsetMeasurement(10 * time.Second),
@@ -412,27 +362,6 @@ func TestDurationIEs(t *testing.T) {
 			),
 			decoded:     10 * time.Second,
 			decoderFunc: func(i *ie.IE) (time.Duration, error) { return i.TimeQuota() },
-		}, {
-			description: "TimeThreshold",
-			structured:  ie.NewTimeThreshold(10 * time.Second),
-			decoded:     10 * time.Second,
-			decoderFunc: func(i *ie.IE) (time.Duration, error) { return i.TimeThreshold() },
-		}, {
-			description: "TimeThreshold/CreateURR",
-			structured: ie.NewCreateURR(
-				ie.NewURRID(0xffffffff),
-				ie.NewTimeThreshold(10*time.Second),
-			),
-			decoded:     10 * time.Second,
-			decoderFunc: func(i *ie.IE) (time.Duration, error) { return i.TimeThreshold() },
-		}, {
-			description: "TimeThreshold/UpdateURR",
-			structured: ie.NewUpdateURR(
-				ie.NewURRID(0xffffffff),
-				ie.NewTimeThreshold(10*time.Second),
-			),
-			decoded:     10 * time.Second,
-			decoderFunc: func(i *ie.IE) (time.Duration, error) { return i.TimeThreshold() },
 		}, {
 			description: "Timer/20hr",
 			structured:  ie.NewTimer(20 * time.Hour),

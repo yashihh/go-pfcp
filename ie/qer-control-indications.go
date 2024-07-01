@@ -1,8 +1,10 @@
-// Copyright 2019-2024 go-pfcp authors. All rights reserved.
+// Copyright 2019-2022 go-pfcp authors. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
 package ie
+
+import "io"
 
 // NewQERControlIndications creates a new QERControlIndications IE.
 func NewQERControlIndications(nord, mode, rcsr int) *IE {
@@ -11,9 +13,13 @@ func NewQERControlIndications(nord, mode, rcsr int) *IE {
 
 // QERControlIndications returns QERControlIndications in uint8 if the type of IE matches.
 func (i *IE) QERControlIndications() (uint8, error) {
+	if len(i.Payload) < 1 {
+		return 0, io.ErrUnexpectedEOF
+	}
+
 	switch i.Type {
 	case QERControlIndications:
-		return i.ValueAsUint8()
+		return i.Payload[0], nil
 	case CreateQER:
 		ies, err := i.CreateQER()
 		if err != nil {

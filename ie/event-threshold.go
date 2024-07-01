@@ -1,8 +1,13 @@
-// Copyright 2019-2024 go-pfcp authors. All rights reserved.
+// Copyright 2019-2022 go-pfcp authors. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
 package ie
+
+import (
+	"encoding/binary"
+	"io"
+)
 
 // NewEventThreshold creates a new EventThreshold IE.
 func NewEventThreshold(quota uint32) *IE {
@@ -11,9 +16,13 @@ func NewEventThreshold(quota uint32) *IE {
 
 // EventThreshold returns EventThreshold in uint32 if the type of IE matches.
 func (i *IE) EventThreshold() (uint32, error) {
+	if len(i.Payload) < 4 {
+		return 0, io.ErrUnexpectedEOF
+	}
+
 	switch i.Type {
 	case EventThreshold:
-		return i.ValueAsUint32()
+		return binary.BigEndian.Uint32(i.Payload[0:4]), nil
 	case CreateURR:
 		ies, err := i.CreateURR()
 		if err != nil {

@@ -1,10 +1,11 @@
-// Copyright 2019-2024 go-pfcp authors. All rights reserved.
+// Copyright 2019-2022 go-pfcp authors. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
 package ie
 
 import (
+	"encoding/binary"
 	"io"
 	"math"
 )
@@ -19,14 +20,18 @@ func NewDLBufferingSuggestedPacketCount(count uint16) *IE {
 
 // DLBufferingSuggestedPacketCount returns DLBufferingSuggestedPacketCount in uint16 if the type of IE matches.
 func (i *IE) DLBufferingSuggestedPacketCount() (uint16, error) {
+	if len(i.Payload) < 1 {
+		return 0, io.ErrUnexpectedEOF
+	}
+
 	switch i.Type {
 	case DLBufferingSuggestedPacketCount:
 		if i.Length == 1 {
 			return uint16(i.Payload[0]), nil
 		}
 
-		if i.Length >= 2 {
-			return i.ValueAsUint16()
+		if i.Length >= 2 && len(i.Payload) >= 2 {
+			return binary.BigEndian.Uint16(i.Payload[0:2]), nil
 		}
 
 		return 0, io.ErrUnexpectedEOF

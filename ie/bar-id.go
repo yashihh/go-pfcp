@@ -1,8 +1,12 @@
-// Copyright 2019-2024 go-pfcp authors. All rights reserved.
+// Copyright 2019-2022 go-pfcp authors. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
 package ie
+
+import (
+	"io"
+)
 
 // NewBARID creates a new BARID IE.
 func NewBARID(id uint8) *IE {
@@ -13,7 +17,11 @@ func NewBARID(id uint8) *IE {
 func (i *IE) BARID() (uint8, error) {
 	switch i.Type {
 	case BARID:
-		return i.ValueAsUint8()
+		if len(i.Payload) < 1 {
+			return 0, io.ErrUnexpectedEOF
+		}
+
+		return i.Payload[0], nil
 	case CreateFAR:
 		ies, err := i.CreateFAR()
 		if err != nil {

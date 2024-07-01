@@ -1,4 +1,4 @@
-// Copyright 2019-2024 go-pfcp authors. All rights reserved.
+// Copyright 2019-2022 go-pfcp authors. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
@@ -43,8 +43,11 @@ func (i *IE) RuleIDType() (uint8, error) {
 	if i.Type != FailedRuleID {
 		return 0, &InvalidTypeError{Type: i.Type}
 	}
+	if len(i.Payload) < 1 {
+		return 0, io.ErrUnexpectedEOF
+	}
 
-	return i.ValueAsUint8()
+	return i.Payload[0], nil
 }
 
 // FailedRuleID returns FailedRuleID in uint32 if the type of IE matches.

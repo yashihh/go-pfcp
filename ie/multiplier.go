@@ -1,4 +1,4 @@
-// Copyright 2019-2024 go-pfcp authors. All rights reserved.
+// Copyright 2019-2022 go-pfcp authors. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
@@ -41,9 +41,13 @@ func (i *IE) Multiplier() ([]byte, error) {
 
 // ValueDigits returns ValueDigits in uint64 if the type of IE matches.
 func (i *IE) ValueDigits() (uint64, error) {
+	if len(i.Payload) < 8 {
+		return 0, io.ErrUnexpectedEOF
+	}
+
 	switch i.Type {
 	case Multiplier:
-		return i.ValueAsUint64()
+		return binary.BigEndian.Uint64(i.Payload[0:8]), nil
 	case AggregatedURRs:
 		ies, err := i.AggregatedURRs()
 		if err != nil {

@@ -1,8 +1,13 @@
-// Copyright 2019-2024 go-pfcp authors. All rights reserved.
+// Copyright 2019-2022 go-pfcp authors. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
 package ie
+
+import (
+	"encoding/binary"
+	"io"
+)
 
 // NewURSEQN creates a new URSEQN IE.
 func NewURSEQN(seq uint32) *IE {
@@ -11,9 +16,13 @@ func NewURSEQN(seq uint32) *IE {
 
 // URSEQN returns URSEQN in uint32 if the type of IE matches.
 func (i *IE) URSEQN() (uint32, error) {
+	if len(i.Payload) < 4 {
+		return 0, io.ErrUnexpectedEOF
+	}
+
 	switch i.Type {
 	case URSEQN:
-		return i.ValueAsUint32()
+		return binary.BigEndian.Uint32(i.Payload[0:4]), nil
 	case UsageReportWithinSessionModificationResponse,
 		UsageReportWithinSessionDeletionResponse,
 		UsageReportWithinSessionReportRequest:

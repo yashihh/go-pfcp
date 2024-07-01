@@ -1,4 +1,4 @@
-// Copyright 2019-2024 go-pfcp authors. All rights reserved.
+// Copyright 2019-2022 go-pfcp authors. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
@@ -156,6 +156,27 @@ func TestTimeIEs(t *testing.T) {
 			),
 			decoded:     time.Date(2019, time.January, 1, 0, 0, 0, 0, time.UTC),
 			decoderFunc: func(i *ie.IE) (time.Time, error) { return i.MonitoringTime() },
+		}, {
+			description: "QuotaValidityTime",
+			structured:  ie.NewQuotaValidityTime(time.Date(2019, time.January, 1, 0, 0, 0, 0, time.UTC)),
+			decoded:     time.Date(2019, time.January, 1, 0, 0, 0, 0, time.UTC),
+			decoderFunc: func(i *ie.IE) (time.Time, error) { return i.QuotaValidityTime() },
+		}, {
+			description: "QuotaValidityTime/CreateURR",
+			structured: ie.NewCreateURR(
+				ie.NewURRID(0xffffffff),
+				ie.NewQuotaValidityTime(time.Date(2019, time.January, 1, 0, 0, 0, 0, time.UTC)),
+			),
+			decoded:     time.Date(2019, time.January, 1, 0, 0, 0, 0, time.UTC),
+			decoderFunc: func(i *ie.IE) (time.Time, error) { return i.QuotaValidityTime() },
+		}, {
+			description: "QuotaValidityTime/UpdateURR",
+			structured: ie.NewUpdateURR(
+				ie.NewURRID(0xffffffff),
+				ie.NewQuotaValidityTime(time.Date(2019, time.January, 1, 0, 0, 0, 0, time.UTC)),
+			),
+			decoded:     time.Date(2019, time.January, 1, 0, 0, 0, 0, time.UTC),
+			decoderFunc: func(i *ie.IE) (time.Time, error) { return i.QuotaValidityTime() },
 		}, {
 			description: "RecoveryTimeStamp",
 			structured:  ie.NewRecoveryTimeStamp(time.Date(2019, time.January, 1, 0, 0, 0, 0, time.UTC)),

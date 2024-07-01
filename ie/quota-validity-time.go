@@ -1,4 +1,4 @@
-// Copyright 2019-2024 go-pfcp authors. All rights reserved.
+// Copyright 2019-2022 go-pfcp authors. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
@@ -11,43 +11,43 @@ import (
 )
 
 // NewQuotaValidityTime creates a new QuotaValidityTime IE.
-func NewQuotaValidityTime(t time.Duration) *IE {
-	return newUint32ValIE(QuotaValidityTime, uint32(t.Seconds()))
+func NewQuotaValidityTime(ts time.Time) *IE {
+	u64sec := uint64(ts.Sub(time.Date(1900, time.January, 1, 0, 0, 0, 0, time.UTC))) / 1000000000
+	return newUint32ValIE(QuotaValidityTime, uint32(u64sec))
 }
 
 // QuotaValidityTime returns QuotaValidityTime in time.Time if the type of IE matches.
-func (i *IE) QuotaValidityTime() (time.Duration, error) {
+func (i *IE) QuotaValidityTime() (time.Time, error) {
 	if len(i.Payload) < 4 {
-		return 0, io.ErrUnexpectedEOF
+		return time.Time{}, io.ErrUnexpectedEOF
 	}
 
 	switch i.Type {
 	case QuotaValidityTime:
-		t := binary.BigEndian.Uint32(i.Payload[0:4])
-		return time.Duration(t) * time.Second, nil
+		return time.Unix(int64(binary.BigEndian.Uint32(i.Payload[0:4])-2208988800), 0), nil
 	case CreateURR:
 		ies, err := i.CreateURR()
 		if err != nil {
-			return 0, err
+			return time.Time{}, err
 		}
 		for _, x := range ies {
 			if x.Type == QuotaValidityTime {
 				return x.QuotaValidityTime()
 			}
 		}
-		return 0, ErrIENotFound
+		return time.Time{}, ErrIENotFound
 	case UpdateURR:
 		ies, err := i.UpdateURR()
 		if err != nil {
-			return 0, err
+			return time.Time{}, err
 		}
 		for _, x := range ies {
 			if x.Type == QuotaValidityTime {
 				return x.QuotaValidityTime()
 			}
 		}
-		return 0, ErrIENotFound
+		return time.Time{}, ErrIENotFound
 	default:
-		return 0, &InvalidTypeError{Type: i.Type}
+		return time.Time{}, &InvalidTypeError{Type: i.Type}
 	}
 }

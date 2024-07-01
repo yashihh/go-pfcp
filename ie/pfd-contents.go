@@ -1,4 +1,4 @@
-// Copyright 2019-2024 go-pfcp authors. All rights reserved.
+// Copyright 2019-2022 go-pfcp authors. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
@@ -299,19 +299,17 @@ func (f *PFDContentsFields) UnmarshalBinary(b []byte) error {
 		f.AFDLength = binary.BigEndian.Uint16(b[offset : offset+2])
 
 		p := b[offset+2 : offset+2+int(f.AFDLength)]
-		s := 0
+		o := 0
 		for {
-			e := s + 2
-			if len(p) <= e {
+			if len(p) <= o+2 {
 				break
 			}
-
-			l := int(binary.BigEndian.Uint16(p[s:e]))
-			if len(p) < e+l {
+			l := binary.BigEndian.Uint16(p[o : o+2])
+			if len(p) < o+2+int(l) {
 				break
 			}
-			f.AdditionalFlowDescription = append(f.AdditionalFlowDescription, string(p[e:e+l]))
-			s += 2 + l
+			f.AdditionalFlowDescription = append(f.AdditionalFlowDescription, string(p[o+2:o+2+int(l)]))
+			o += 2 + int(l)
 		}
 		offset += 2 + int(f.AFDLength)
 	}
@@ -321,25 +319,21 @@ func (f *PFDContentsFields) UnmarshalBinary(b []byte) error {
 			return io.ErrUnexpectedEOF
 		}
 		f.AURLLength = binary.BigEndian.Uint16(b[offset : offset+2])
-		offset += 2
 
-		p := b[offset : offset+int(f.AURLLength)]
-		s := 0
+		p := b[offset+2 : offset+2+int(f.AURLLength)]
+		o := 0
 		for {
-			e := s + 2
-			if len(p) <= e {
+			if len(p) <= o+2 {
 				break
 			}
-
-			l := int(binary.BigEndian.Uint16(p[s:e]))
-			if len(p) < e+l {
+			l := binary.BigEndian.Uint16(p[o : o+2])
+			if len(p) < o+2+int(l) {
 				break
 			}
-
-			f.AdditionalURL = append(f.AdditionalURL, string(p[e:e+l]))
-			s += 2 + l
+			f.AdditionalURL = append(f.AdditionalURL, string(p[o+2:o+2+int(l)]))
+			o += 2 + int(l)
 		}
-		offset += int(f.AURLLength)
+		offset += 2 + int(f.AURLLength)
 	}
 
 	if f.HasADNP() {
@@ -347,23 +341,19 @@ func (f *PFDContentsFields) UnmarshalBinary(b []byte) error {
 			return io.ErrUnexpectedEOF
 		}
 		f.ADNPLength = binary.BigEndian.Uint16(b[offset : offset+2])
-		offset += 2
 
-		p := b[offset : offset+int(f.ADNPLength)]
-		s := 0
+		p := b[offset+2 : offset+2+int(f.ADNPLength)]
+		o := 0
 		for {
-			e := s + 2
-			if len(p) <= e {
+			if len(p) <= o+2 {
 				break
 			}
-
-			l := int(binary.BigEndian.Uint16(p[s:e]))
-			if len(p) < e+l {
+			l := binary.BigEndian.Uint16(p[o : o+2])
+			if len(p) < o+2+int(l) {
 				break
 			}
-
-			f.AdditionalDomainNameAndProtocol = append(f.AdditionalDomainNameAndProtocol, string(p[e:e+l]))
-			s += 2 + l
+			f.AdditionalDomainNameAndProtocol = append(f.AdditionalDomainNameAndProtocol, string(p[o+2:o+2+int(l)]))
+			o += 2 + int(l)
 		}
 	}
 

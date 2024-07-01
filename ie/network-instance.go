@@ -1,4 +1,4 @@
-// Copyright 2019-2024 go-pfcp authors. All rights reserved.
+// Copyright 2019-2022 go-pfcp authors. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
@@ -21,7 +21,7 @@ func NewNetworkInstanceFQDN(fqdn string) *IE {
 func (i *IE) NetworkInstance() (string, error) {
 	switch i.Type {
 	case NetworkInstance:
-		return i.ValueAsString()
+		return string(i.Payload), nil
 	case PDI:
 		ies, err := i.PDI()
 		if err != nil {

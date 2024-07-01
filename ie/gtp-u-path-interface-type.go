@@ -1,8 +1,10 @@
-// Copyright 2019-2024 go-pfcp authors. All rights reserved.
+// Copyright 2019-2022 go-pfcp authors. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
 package ie
+
+import "io"
 
 // NewGTPUPathInterfaceType creates a new GTPUPathInterfaceType IE.
 func NewGTPUPathInterfaceType(n3, n9 int) *IE {
@@ -11,9 +13,13 @@ func NewGTPUPathInterfaceType(n3, n9 int) *IE {
 
 // GTPUPathInterfaceType returns GTPUPathInterfaceType in uint8 if the type of IE matches.
 func (i *IE) GTPUPathInterfaceType() (uint8, error) {
+	if len(i.Payload) < 1 {
+		return 0, io.ErrUnexpectedEOF
+	}
+
 	switch i.Type {
 	case GTPUPathInterfaceType:
-		return i.ValueAsUint8()
+		return i.Payload[0], nil
 	case GTPUPathQoSControlInformation:
 		ies, err := i.GTPUPathQoSControlInformation()
 		if err != nil {

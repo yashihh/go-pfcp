@@ -1,8 +1,10 @@
-// Copyright 2019-2024 go-pfcp authors. All rights reserved.
+// Copyright 2019-2022 go-pfcp authors. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
 package ie
+
+import "io"
 
 // Cause definitions.
 const (
@@ -35,5 +37,9 @@ func (i *IE) Cause() (uint8, error) {
 	if i.Type != Cause {
 		return 0, &InvalidTypeError{Type: i.Type}
 	}
-	return i.ValueAsUint8()
+	if len(i.Payload) == 0 {
+		return 0, io.ErrUnexpectedEOF
+	}
+
+	return i.Payload[0], nil
 }

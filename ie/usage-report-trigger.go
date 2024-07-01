@@ -1,4 +1,4 @@
-// Copyright 2019-2024 go-pfcp authors. All rights reserved.
+// Copyright 2019-2022 go-pfcp authors. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
@@ -15,7 +15,7 @@ func NewUsageReportTrigger(triggerOctets ...uint8) *IE {
 
 // UsageReportTrigger returns UsageReportTrigger in []byte if the type of IE matches.
 func (i *IE) UsageReportTrigger() ([]byte, error) {
-	if len(i.Payload) < 2 {
+	if len(i.Payload) < 3 {
 		return nil, io.ErrUnexpectedEOF
 	}
 
@@ -42,16 +42,27 @@ func (i *IE) UsageReportTrigger() ([]byte, error) {
 
 // HasIMMER reports whether an IE has IMMER bit.
 func (i *IE) HasIMMER() bool {
+	if len(i.Payload) < 1 {
+		return false
+	}
+
 	switch i.Type {
+	case UsageReportTrigger:
+		u8 := i.Payload[0]
+		return has8thBit(u8)
 	case UsageReportWithinSessionModificationResponse,
 		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest,
-		UsageReportTrigger:
-		v, err := i.UsageReportTrigger()
+		UsageReportWithinSessionReportRequest:
+		ies, err := i.UsageReport()
 		if err != nil {
 			return false
 		}
-		return has8thBit(v[0])
+		for _, x := range ies {
+			if x.Type == UsageReportTrigger {
+				return x.HasIMMER()
+			}
+		}
+		return false
 	default:
 		return false
 	}
@@ -59,16 +70,27 @@ func (i *IE) HasIMMER() bool {
 
 // HasMONIT reports whether an IE has MONIT bit.
 func (i *IE) HasMONIT() bool {
+	if len(i.Payload) < 2 {
+		return false
+	}
+
 	switch i.Type {
+	case UsageReportTrigger:
+		u8 := i.Payload[1]
+		return has5thBit(u8)
 	case UsageReportWithinSessionModificationResponse,
 		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest,
-		UsageReportTrigger:
-		v, err := i.UsageReportTrigger()
+		UsageReportWithinSessionReportRequest:
+		ies, err := i.UsageReport()
 		if err != nil {
 			return false
 		}
-		return has5thBit(v[1])
+		for _, x := range ies {
+			if x.Type == UsageReportTrigger {
+				return x.HasMONIT()
+			}
+		}
+		return false
 	default:
 		return false
 	}
@@ -76,16 +98,27 @@ func (i *IE) HasMONIT() bool {
 
 // HasTERMR reports whether an IE has TERMR bit.
 func (i *IE) HasTERMR() bool {
+	if len(i.Payload) < 2 {
+		return false
+	}
+
 	switch i.Type {
+	case UsageReportTrigger:
+		u8 := i.Payload[1]
+		return has4thBit(u8)
 	case UsageReportWithinSessionModificationResponse,
 		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest,
-		UsageReportTrigger:
-		v, err := i.UsageReportTrigger()
+		UsageReportWithinSessionReportRequest:
+		ies, err := i.UsageReport()
 		if err != nil {
 			return false
 		}
-		return has4thBit(v[1])
+		for _, x := range ies {
+			if x.Type == UsageReportTrigger {
+				return x.HasTERMR()
+			}
+		}
+		return false
 	default:
 		return false
 	}
@@ -93,21 +126,27 @@ func (i *IE) HasTERMR() bool {
 
 // HasEMRRE reports whether an IE has EMRRE bit.
 func (i *IE) HasEMRRE() bool {
+	if len(i.Payload) < 3 {
+		return false
+	}
+
 	switch i.Type {
+	case UsageReportTrigger:
+		u8 := i.Payload[2]
+		return has5thBit(u8)
 	case UsageReportWithinSessionModificationResponse,
 		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest,
-		UsageReportTrigger:
-		v, err := i.UsageReportTrigger()
+		UsageReportWithinSessionReportRequest:
+		ies, err := i.UsageReport()
 		if err != nil {
 			return false
 		}
-		if len(v) < 3 {
-			// The 3rd byte only appears in R16 or newer R15
-			// This is for backward-compatibility with older R15
-			return false
+		for _, x := range ies {
+			if x.Type == UsageReportTrigger {
+				return x.HasEMRRE()
+			}
 		}
-		return has5thBit(v[2])
+		return false
 	default:
 		return false
 	}
@@ -115,21 +154,27 @@ func (i *IE) HasEMRRE() bool {
 
 // HasTEBUR reports whether an IE has TEBUR bit.
 func (i *IE) HasTEBUR() bool {
+	if len(i.Payload) < 3 {
+		return false
+	}
+
 	switch i.Type {
+	case UsageReportTrigger:
+		u8 := i.Payload[2]
+		return has2ndBit(u8)
 	case UsageReportWithinSessionModificationResponse,
 		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest,
-		UsageReportTrigger:
-		v, err := i.UsageReportTrigger()
+		UsageReportWithinSessionReportRequest:
+		ies, err := i.UsageReport()
 		if err != nil {
 			return false
 		}
-		if len(v) < 3 {
-			// The 3rd byte only appears in R16 or newer R15
-			// This is for backward-compatibility with older R15
-			return false
+		for _, x := range ies {
+			if x.Type == UsageReportTrigger {
+				return x.HasTEBUR()
+			}
 		}
-		return has2ndBit(v[2])
+		return false
 	default:
 		return false
 	}

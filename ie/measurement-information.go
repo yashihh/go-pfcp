@@ -1,8 +1,12 @@
-// Copyright 2019-2024 go-pfcp authors. All rights reserved.
+// Copyright 2019-2022 go-pfcp authors. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
 package ie
+
+import (
+	"io"
+)
 
 // NewMeasurementInformation creates a new MeasurementInformation IE.
 func NewMeasurementInformation(flags uint8) *IE {
@@ -11,9 +15,13 @@ func NewMeasurementInformation(flags uint8) *IE {
 
 // MeasurementInformation returns MeasurementInformation in uint8 if the type of IE matches.
 func (i *IE) MeasurementInformation() (uint8, error) {
+	if len(i.Payload) < 1 {
+		return 0, io.ErrUnexpectedEOF
+	}
+
 	switch i.Type {
 	case MeasurementInformation:
-		return i.ValueAsUint8()
+		return i.Payload[0], nil
 	case CreateURR:
 		ies, err := i.CreateURR()
 		if err != nil {

@@ -1,4 +1,4 @@
-// Copyright 2019-2024 go-pfcp authors. All rights reserved.
+// Copyright 2019-2022 go-pfcp authors. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
@@ -140,6 +140,11 @@ func TestUint8IEs(t *testing.T) {
 			structured:  ie.NewCause(ie.CauseRequestAccepted),
 			decoded:     ie.CauseRequestAccepted,
 			decoderFunc: func(i *ie.IE) (uint8, error) { return i.Cause() },
+		}, {
+			description: "CPFunctionFeatures",
+			structured:  ie.NewCPFunctionFeatures(0x3f),
+			decoded:     0x3f,
+			decoderFunc: func(i *ie.IE) (uint8, error) { return i.CPFunctionFeatures() },
 		}, {
 			description: "CreateBridgeInfoForTSC",
 			structured:  ie.NewCreateBridgeInfoForTSC(1),

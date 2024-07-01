@@ -1,4 +1,4 @@
-// Copyright 2019-2024 go-pfcp authors. All rights reserved.
+// Copyright 2019-2022 go-pfcp authors. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
@@ -52,21 +52,19 @@ func (i *IE) ReportingTriggers() ([]byte, error) {
 // HasLIUSA reports whether an IE has LIUSA bit.
 func (i *IE) HasLIUSA() bool {
 	switch i.Type {
-	case CreateURR, UpdateURR, ReportingTriggers:
-		v, err := i.ReportingTriggers()
-		if err != nil {
+	case ReportingTriggers:
+		if len(i.Payload) < 1 {
 			return false
 		}
-		return has8thBit(v[0])
-	case UsageReportWithinSessionModificationResponse,
-		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest,
-		UsageReportTrigger:
-		v, err := i.UsageReportTrigger()
-		if err != nil {
+
+		u8 := i.Payload[0]
+		return has8thBit(u8)
+	case UsageReportTrigger:
+		if len(i.Payload) < 2 {
 			return false
 		}
-		return has3rdBit(v[1])
+		u8 := i.Payload[1]
+		return has3rdBit(u8)
 	default:
 		return false
 	}
@@ -74,22 +72,14 @@ func (i *IE) HasLIUSA() bool {
 
 // HasDROTH reports whether an IE has DROTH bit.
 func (i *IE) HasDROTH() bool {
+	if len(i.Payload) < 1 {
+		return false
+	}
+
 	switch i.Type {
-	case CreateURR, UpdateURR, ReportingTriggers:
-		v, err := i.ReportingTriggers()
-		if err != nil {
-			return false
-		}
-		return has7thBit(v[0])
-	case UsageReportWithinSessionModificationResponse,
-		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest,
-		UsageReportTrigger:
-		v, err := i.UsageReportTrigger()
-		if err != nil {
-			return false
-		}
-		return has7thBit(v[0])
+	case ReportingTriggers, UsageReportTrigger:
+		u8 := i.Payload[0]
+		return has7thBit(u8)
 	default:
 		return false
 	}
@@ -97,22 +87,14 @@ func (i *IE) HasDROTH() bool {
 
 // HasSTOPT reports whether an IE has STOPT bit.
 func (i *IE) HasSTOPT() bool {
+	if len(i.Payload) < 1 {
+		return false
+	}
+
 	switch i.Type {
-	case CreateURR, UpdateURR, ReportingTriggers:
-		v, err := i.ReportingTriggers()
-		if err != nil {
-			return false
-		}
-		return has6thBit(v[0])
-	case UsageReportWithinSessionModificationResponse,
-		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest,
-		UsageReportTrigger:
-		v, err := i.UsageReportTrigger()
-		if err != nil {
-			return false
-		}
-		return has6thBit(v[0])
+	case ReportingTriggers, UsageReportTrigger:
+		u8 := i.Payload[0]
+		return has6thBit(u8)
 	default:
 		return false
 	}
@@ -120,22 +102,14 @@ func (i *IE) HasSTOPT() bool {
 
 // HasSTART reports whether an IE has START bit.
 func (i *IE) HasSTART() bool {
+	if len(i.Payload) < 1 {
+		return false
+	}
+
 	switch i.Type {
-	case CreateURR, UpdateURR, ReportingTriggers:
-		v, err := i.ReportingTriggers()
-		if err != nil {
-			return false
-		}
-		return has5thBit(v[0])
-	case UsageReportWithinSessionModificationResponse,
-		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest,
-		UsageReportTrigger:
-		v, err := i.UsageReportTrigger()
-		if err != nil {
-			return false
-		}
-		return has5thBit(v[0])
+	case ReportingTriggers, UsageReportTrigger:
+		u8 := i.Payload[0]
+		return has5thBit(u8)
 	default:
 		return false
 	}
@@ -143,22 +117,14 @@ func (i *IE) HasSTART() bool {
 
 // HasQUHTI reports whether an IE has QUHTI bit.
 func (i *IE) HasQUHTI() bool {
+	if len(i.Payload) < 1 {
+		return false
+	}
+
 	switch i.Type {
-	case CreateURR, UpdateURR, ReportingTriggers:
-		v, err := i.ReportingTriggers()
-		if err != nil {
-			return false
-		}
-		return has4thBit(v[0])
-	case UsageReportWithinSessionModificationResponse,
-		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest,
-		UsageReportTrigger:
-		v, err := i.UsageReportTrigger()
-		if err != nil {
-			return false
-		}
-		return has4thBit(v[0])
+	case ReportingTriggers, UsageReportTrigger:
+		u8 := i.Payload[0]
+		return has4thBit(u8)
 	default:
 		return false
 	}
@@ -166,22 +132,14 @@ func (i *IE) HasQUHTI() bool {
 
 // HasTIMTH reports whether an IE has TIMTH bit.
 func (i *IE) HasTIMTH() bool {
+	if len(i.Payload) < 1 {
+		return false
+	}
+
 	switch i.Type {
-	case CreateURR, UpdateURR, ReportingTriggers:
-		v, err := i.ReportingTriggers()
-		if err != nil {
-			return false
-		}
-		return has3rdBit(v[0])
-	case UsageReportWithinSessionModificationResponse,
-		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest,
-		UsageReportTrigger:
-		v, err := i.UsageReportTrigger()
-		if err != nil {
-			return false
-		}
-		return has3rdBit(v[0])
+	case ReportingTriggers, UsageReportTrigger:
+		u8 := i.Payload[0]
+		return has3rdBit(u8)
 	default:
 		return false
 	}
@@ -189,22 +147,14 @@ func (i *IE) HasTIMTH() bool {
 
 // HasVOLTH reports whether an IE has VOLTH bit.
 func (i *IE) HasVOLTH() bool {
+	if len(i.Payload) < 1 {
+		return false
+	}
+
 	switch i.Type {
-	case CreateURR, UpdateURR, ReportingTriggers:
-		v, err := i.ReportingTriggers()
-		if err != nil {
-			return false
-		}
-		return has2ndBit(v[0])
-	case UsageReportWithinSessionModificationResponse,
-		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest,
-		UsageReportTrigger:
-		v, err := i.UsageReportTrigger()
-		if err != nil {
-			return false
-		}
-		return has2ndBit(v[0])
+	case ReportingTriggers, UsageReportTrigger:
+		u8 := i.Payload[0]
+		return has2ndBit(u8)
 	default:
 		return false
 	}
@@ -212,29 +162,17 @@ func (i *IE) HasVOLTH() bool {
 
 // HasPERIO reports whether an IE has PERIO bit.
 func (i *IE) HasPERIO() bool {
+	if len(i.Payload) < 1 {
+		return false
+	}
+
 	switch i.Type {
-	case CreateURR, UpdateURR, ReportingTriggers:
-		v, err := i.ReportingTriggers()
-		if err != nil {
-			return false
-		}
-		return has1stBit(v[0])
-	case UsageReportWithinSessionModificationResponse,
-		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest,
-		UsageReportTrigger:
-		v, err := i.UsageReportTrigger()
-		if err != nil {
-			return false
-		}
-		return has1stBit(v[0])
-	case QoSMonitoringPerQoSFlowControlInformation,
-		ReportingFrequency:
-		v, err := i.ReportingFrequency()
-		if err != nil {
-			return false
-		}
-		return has2ndBit(v)
+	case ReportingTriggers, UsageReportTrigger:
+		u8 := i.Payload[0]
+		return has1stBit(u8)
+	case ReportingFrequency:
+		u8 := i.Payload[0]
+		return has2ndBit(u8)
 	default:
 		return false
 	}
@@ -243,26 +181,20 @@ func (i *IE) HasPERIO() bool {
 // HasQUVTI reports whether an IE has QUVTI bit.
 func (i *IE) HasQUVTI() bool {
 	switch i.Type {
-	case CreateURR, UpdateURR, ReportingTriggers:
-		v, err := i.ReportingTriggers()
-		if err != nil {
+	case ReportingTriggers:
+		if len(i.Payload) < 2 {
 			return false
 		}
-		return has8thBit(v[1])
-	case UsageReportWithinSessionModificationResponse,
-		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest,
-		UsageReportTrigger:
-		v, err := i.UsageReportTrigger()
-		if err != nil {
+
+		u8 := i.Payload[1]
+		return has8thBit(u8)
+	case UsageReportTrigger:
+		if len(i.Payload) < 3 {
 			return false
 		}
-		if len(v) < 3 {
-			// The 3rd byte only appears in R16 or newer R15
-			// This is for backward-compatibility with older R15
-			return false
-		}
-		return has4thBit(v[2])
+
+		u8 := i.Payload[2]
+		return has4thBit(u8)
 	default:
 		return false
 	}
@@ -271,26 +203,20 @@ func (i *IE) HasQUVTI() bool {
 // HasIPMJL reports whether an IE has IPMJL bit.
 func (i *IE) HasIPMJL() bool {
 	switch i.Type {
-	case CreateURR, UpdateURR, ReportingTriggers:
-		v, err := i.ReportingTriggers()
-		if err != nil {
+	case ReportingTriggers:
+		if len(i.Payload) < 2 {
 			return false
 		}
-		return has7thBit(v[1])
-	case UsageReportWithinSessionModificationResponse,
-		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest,
-		UsageReportTrigger:
-		v, err := i.UsageReportTrigger()
-		if err != nil {
+
+		u8 := i.Payload[1]
+		return has7thBit(u8)
+	case UsageReportTrigger:
+		if len(i.Payload) < 3 {
 			return false
 		}
-		if len(v) < 3 {
-			// The 3rd byte only appears in R16 or newer R15
-			// This is for backward-compatibility with older R15
-			return false
-		}
-		return has3rdBit(v[2])
+
+		u8 := i.Payload[2]
+		return has3rdBit(u8)
 	default:
 		return false
 	}
@@ -299,26 +225,20 @@ func (i *IE) HasIPMJL() bool {
 // HasEVEQU reports whether an IE has EVEQU bit.
 func (i *IE) HasEVEQU() bool {
 	switch i.Type {
-	case CreateURR, UpdateURR, ReportingTriggers:
-		v, err := i.ReportingTriggers()
-		if err != nil {
+	case ReportingTriggers:
+		if len(i.Payload) < 2 {
 			return false
 		}
-		return has6thBit(v[1])
-	case UsageReportWithinSessionModificationResponse,
-		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest,
-		UsageReportTrigger:
-		v, err := i.UsageReportTrigger()
-		if err != nil {
+
+		u8 := i.Payload[1]
+		return has6thBit(u8)
+	case UsageReportTrigger:
+		if len(i.Payload) < 3 {
 			return false
 		}
-		if len(v) < 3 {
-			// The 3rd byte only appears in R16 or newer R15
-			// This is for backward-compatibility with older R15
-			return false
-		}
-		return has1stBit(v[2])
+
+		u8 := i.Payload[2]
+		return has1stBit(u8)
 	default:
 		return false
 	}
@@ -326,22 +246,17 @@ func (i *IE) HasEVEQU() bool {
 
 // HasEVETH reports whether an IE has EVETH bit.
 func (i *IE) HasEVETH() bool {
+	if len(i.Payload) < 2 {
+		return false
+	}
+
 	switch i.Type {
-	case CreateURR, UpdateURR, ReportingTriggers:
-		v, err := i.ReportingTriggers()
-		if err != nil {
-			return false
-		}
-		return has5thBit(v[1])
-	case UsageReportWithinSessionModificationResponse,
-		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest,
-		UsageReportTrigger:
-		v, err := i.UsageReportTrigger()
-		if err != nil {
-			return false
-		}
-		return has8thBit(v[1])
+	case ReportingTriggers:
+		u8 := i.Payload[1]
+		return has5thBit(u8)
+	case UsageReportTrigger:
+		u8 := i.Payload[1]
+		return has8thBit(u8)
 	default:
 		return false
 	}
@@ -349,22 +264,17 @@ func (i *IE) HasEVETH() bool {
 
 // HasMACAR reports whether an IE has MACAR bit.
 func (i *IE) HasMACAR() bool {
+	if len(i.Payload) < 2 {
+		return false
+	}
+
 	switch i.Type {
-	case CreateURR, UpdateURR, ReportingTriggers:
-		v, err := i.ReportingTriggers()
-		if err != nil {
-			return false
-		}
-		return has4thBit(v[1])
-	case UsageReportWithinSessionModificationResponse,
-		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest,
-		UsageReportTrigger:
-		v, err := i.UsageReportTrigger()
-		if err != nil {
-			return false
-		}
-		return has7thBit(v[1])
+	case ReportingTriggers:
+		u8 := i.Payload[1]
+		return has4thBit(u8)
+	case UsageReportTrigger:
+		u8 := i.Payload[1]
+		return has7thBit(u8)
 	default:
 		return false
 	}
@@ -372,22 +282,17 @@ func (i *IE) HasMACAR() bool {
 
 // HasENVCL reports whether an IE has ENVCL bit.
 func (i *IE) HasENVCL() bool {
+	if len(i.Payload) < 2 {
+		return false
+	}
+
 	switch i.Type {
-	case CreateURR, UpdateURR, ReportingTriggers:
-		v, err := i.ReportingTriggers()
-		if err != nil {
-			return false
-		}
-		return has3rdBit(v[1])
-	case UsageReportWithinSessionModificationResponse,
-		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest,
-		UsageReportTrigger:
-		v, err := i.UsageReportTrigger()
-		if err != nil {
-			return false
-		}
-		return has6thBit(v[1])
+	case ReportingTriggers:
+		u8 := i.Payload[1]
+		return has3rdBit(u8)
+	case UsageReportTrigger:
+		u8 := i.Payload[1]
+		return has6thBit(u8)
 	default:
 		return false
 	}
@@ -395,22 +300,14 @@ func (i *IE) HasENVCL() bool {
 
 // HasTIMQU reports whether an IE has TIMQU bit.
 func (i *IE) HasTIMQU() bool {
+	if len(i.Payload) < 2 {
+		return false
+	}
+
 	switch i.Type {
-	case CreateURR, UpdateURR, ReportingTriggers:
-		v, err := i.ReportingTriggers()
-		if err != nil {
-			return false
-		}
-		return has2ndBit(v[1])
-	case UsageReportWithinSessionModificationResponse,
-		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest,
-		UsageReportTrigger:
-		v, err := i.UsageReportTrigger()
-		if err != nil {
-			return false
-		}
-		return has2ndBit(v[1])
+	case ReportingTriggers, UsageReportTrigger:
+		u8 := i.Payload[1]
+		return has2ndBit(u8)
 	default:
 		return false
 	}
@@ -418,22 +315,14 @@ func (i *IE) HasTIMQU() bool {
 
 // HasVOLQU reports whether an IE has VOLQU bit.
 func (i *IE) HasVOLQU() bool {
+	if len(i.Payload) < 2 {
+		return false
+	}
+
 	switch i.Type {
-	case CreateURR, UpdateURR, ReportingTriggers:
-		v, err := i.ReportingTriggers()
-		if err != nil {
-			return false
-		}
-		return has1stBit(v[1])
-	case UsageReportWithinSessionModificationResponse,
-		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest,
-		UsageReportTrigger:
-		v, err := i.UsageReportTrigger()
-		if err != nil {
-			return false
-		}
-		return has1stBit(v[1])
+	case ReportingTriggers, UsageReportTrigger:
+		u8 := i.Payload[1]
+		return has1stBit(u8)
 	default:
 		return false
 	}
@@ -442,31 +331,20 @@ func (i *IE) HasVOLQU() bool {
 // HasUPINT reports whether an IE has UPINT bit.
 func (i *IE) HasUPINT() bool {
 	switch i.Type {
-	case CreateURR, UpdateURR, ReportingTriggers:
-		v, err := i.ReportingTriggers()
-		if err != nil {
+	case ReportingTriggers:
+		if len(i.Payload) < 3 {
 			return false
 		}
-		if len(v) < 3 {
-			// The 3rd byte only appears in R16
-			// This is for backward-compatibility with R15
+
+		u8 := i.Payload[2]
+		return has2ndBit(u8)
+	case UsageReportTrigger:
+		if len(i.Payload) < 3 {
 			return false
 		}
-		return has2ndBit(v[2])
-	case UsageReportWithinSessionModificationResponse,
-		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest,
-		UsageReportTrigger:
-		v, err := i.UsageReportTrigger()
-		if err != nil {
-			return false
-		}
-		if len(v) < 3 {
-			// The 3rd byte only appears in R16 or newer R15
-			// This is for backward-compatibility with older R15
-			return false
-		}
-		return has6thBit(v[2])
+
+		u8 := i.Payload[2]
+		return has6thBit(u8)
 	default:
 		return false
 	}
@@ -475,17 +353,13 @@ func (i *IE) HasUPINT() bool {
 // HasREEMR reports whether an IE has REEMR bit.
 func (i *IE) HasREEMR() bool {
 	switch i.Type {
-	case CreateURR, UpdateURR, ReportingTriggers:
-		v, err := i.ReportingTriggers()
-		if err != nil {
+	case ReportingTriggers:
+		if len(i.Payload) < 3 {
 			return false
 		}
-		if len(v) < 3 {
-			// The 3rd byte only appears in R16
-			// This is for backward-compatibility with R15
-			return false
-		}
-		return has1stBit(v[2])
+
+		u8 := i.Payload[2]
+		return has1stBit(u8)
 	default:
 		return false
 	}

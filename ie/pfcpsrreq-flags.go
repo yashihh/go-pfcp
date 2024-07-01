@@ -1,4 +1,4 @@
-// Copyright 2019-2024 go-pfcp authors. All rights reserved.
+// Copyright 2019-2022 go-pfcp authors. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
@@ -15,7 +15,7 @@ func (i *IE) PFCPSRReqFlags() (uint8, error) {
 		return 0, &InvalidTypeError{Type: i.Type}
 	}
 
-	return i.ValueAsUint8()
+	return i.Payload[0], nil
 }
 
 // HasPSDBU reports whether an IE has PSDBU bit.

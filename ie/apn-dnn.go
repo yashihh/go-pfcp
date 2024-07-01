@@ -1,8 +1,12 @@
-// Copyright 2019-2024 go-pfcp authors. All rights reserved.
+// Copyright 2019-2022 go-pfcp authors. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
 package ie
+
+import (
+	"github.com/wmnsk/go-pfcp/internal/utils"
+)
 
 // NewAPNDNN creates a new APNDNN IE.
 func NewAPNDNN(apn string) *IE {
@@ -15,7 +19,7 @@ func (i *IE) APNDNN() (string, error) {
 		return "", &InvalidTypeError{Type: i.Type}
 	}
 
-	return i.ValueAsFQDN()
+	return utils.DecodeFQDN(i.Payload), nil
 }
 
 // MustAPNDNN returns APNDNN in string, ignoring errors.

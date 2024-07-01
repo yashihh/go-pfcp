@@ -1,10 +1,12 @@
-// Copyright 2019-2024 go-pfcp authors. All rights reserved.
+// Copyright 2019-2022 go-pfcp authors. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
 package ie
 
 import (
+	"encoding/binary"
+	"io"
 	"time"
 )
 
@@ -16,9 +18,13 @@ func NewTimeOfLastPacket(ts time.Time) *IE {
 
 // TimeOfLastPacket returns TimeOfLastPacket in time.Time if the type of IE matches.
 func (i *IE) TimeOfLastPacket() (time.Time, error) {
+	if len(i.Payload) < 4 {
+		return time.Time{}, io.ErrUnexpectedEOF
+	}
+
 	switch i.Type {
 	case TimeOfLastPacket:
-		return i.valueAs3GPPTimestamp()
+		return time.Unix(int64(binary.BigEndian.Uint32(i.Payload[0:4])-2208988800), 0), nil
 	case UsageReportWithinSessionModificationResponse,
 		UsageReportWithinSessionDeletionResponse,
 		UsageReportWithinSessionReportRequest:

@@ -1,8 +1,10 @@
-// Copyright 2019-2024 go-pfcp authors. All rights reserved.
+// Copyright 2019-2022 go-pfcp authors. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
 package ie
+
+import "io"
 
 // NewRequestedClockDriftInformation creates a new RequestedClockDriftInformation IE.
 func NewRequestedClockDriftInformation(rrcr, rrto uint8) *IE {
@@ -11,9 +13,13 @@ func NewRequestedClockDriftInformation(rrcr, rrto uint8) *IE {
 
 // RequestedClockDriftInformation returns RequestedClockDriftInformation in uint8 if the type of IE matches.
 func (i *IE) RequestedClockDriftInformation() (uint8, error) {
+	if len(i.Payload) < 1 {
+		return 0, io.ErrUnexpectedEOF
+	}
+
 	switch i.Type {
 	case RequestedClockDriftInformation:
-		return i.ValueAsUint8()
+		return i.Payload[0], nil
 	case ClockDriftControlInformation:
 		ies, err := i.ClockDriftControlInformation()
 		if err != nil {

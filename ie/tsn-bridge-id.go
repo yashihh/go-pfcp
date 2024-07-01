@@ -1,4 +1,4 @@
-// Copyright 2019-2024 go-pfcp authors. All rights reserved.
+// Copyright 2019-2022 go-pfcp authors. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
@@ -14,10 +14,10 @@ func NewTSNBridgeID(mac net.HardwareAddr) *IE {
 	if mac == nil {
 		return New(TSNBridgeID, []byte{0x00})
 	}
-	l := len(mac) + 1
-	b := make([]byte, l)
+
+	b := make([]byte, 7)
 	b[0] = 0x01
-	copy(b[1:l], mac)
+	copy(b[1:7], mac)
 	return New(TSNBridgeID, b)
 }
 
@@ -39,16 +39,13 @@ func (i *IE) TSNBridgeID() (net.HardwareAddr, error) {
 
 	switch i.Type {
 	case TSNBridgeID:
-		if !has1stBit(i.Payload[0]) {
-			return nil, nil
-		}
-		if (len(i.Payload) != 7) && (len(i.Payload) < 9) {
-			return nil, io.ErrUnexpectedEOF
-		}
-		if len(i.Payload) == 7 {
+		if has1stBit(i.Payload[0]) {
+			if len(i.Payload) < 7 {
+				return nil, io.ErrUnexpectedEOF
+			}
 			return net.HardwareAddr(i.Payload[1:7]), nil
 		}
-		return net.HardwareAddr(i.Payload[1:9]), nil
+		return nil, nil
 	case CreatedBridgeInfoForTSC:
 		ies, err := i.CreatedBridgeInfoForTSC()
 		if err != nil {

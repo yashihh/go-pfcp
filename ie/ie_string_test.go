@@ -1,4 +1,4 @@
-// Copyright 2019-2024 go-pfcp authors. All rights reserved.
+// Copyright 2019-2022 go-pfcp authors. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
@@ -180,7 +180,7 @@ func TestStringIEs(t *testing.T) {
 			description: "SMFSetID",
 			structured:  ie.NewSMFSetID("go-pfcp"),
 			decoded:     "go-pfcp",
-			decoderFunc: func(i *ie.IE) (string, error) { return i.SMFSetID() },
+			decoderFunc: func(i *ie.IE) (string, error) { return i.SMFSetIDString() },
 		}, {
 			description: "UEIPAddressPoolIdentity",
 			structured:  ie.NewUEIPAddressPoolIdentity("go-pfcp"),

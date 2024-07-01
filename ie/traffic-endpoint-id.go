@@ -1,8 +1,12 @@
-// Copyright 2019-2024 go-pfcp authors. All rights reserved.
+// Copyright 2019-2022 go-pfcp authors. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
 package ie
+
+import (
+	"io"
+)
 
 // NewTrafficEndpointID creates a new TrafficEndpointID IE.
 func NewTrafficEndpointID(id uint8) *IE {
@@ -11,9 +15,13 @@ func NewTrafficEndpointID(id uint8) *IE {
 
 // TrafficEndpointID returns TrafficEndpointID in uint8 if the type of IE matches.
 func (i *IE) TrafficEndpointID() (uint8, error) {
+	if len(i.Payload) < 1 {
+		return 0, io.ErrUnexpectedEOF
+	}
+
 	switch i.Type {
 	case TrafficEndpointID:
-		return i.ValueAsUint8()
+		return i.Payload[0], nil
 	case CreatePDR:
 		ies, err := i.CreatePDR()
 		if err != nil {

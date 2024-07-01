@@ -1,8 +1,13 @@
-// Copyright 2019-2024 go-pfcp authors. All rights reserved.
+// Copyright 2019-2022 go-pfcp authors. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
 package ie
+
+import (
+	"encoding/binary"
+	"io"
+)
 
 // Framed-Routing definitions.
 //
@@ -21,9 +26,13 @@ func NewFramedRouting(routing uint32) *IE {
 
 // FramedRouting returns FramedRouting in uint32 if the type of IE matches.
 func (i *IE) FramedRouting() (uint32, error) {
+	if len(i.Payload) < 4 {
+		return 0, io.ErrUnexpectedEOF
+	}
+
 	switch i.Type {
 	case FramedRouting:
-		return i.ValueAsUint32()
+		return binary.BigEndian.Uint32(i.Payload[0:4]), nil
 	case CreateTrafficEndpoint:
 		ies, err := i.CreateTrafficEndpoint()
 		if err != nil {

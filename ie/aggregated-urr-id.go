@@ -1,8 +1,13 @@
-// Copyright 2019-2024 go-pfcp authors. All rights reserved.
+// Copyright 2019-2022 go-pfcp authors. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
 package ie
+
+import (
+	"encoding/binary"
+	"io"
+)
 
 // NewAggregatedURRID creates a new AggregatedURRID IE.
 func NewAggregatedURRID(id uint32) *IE {
@@ -13,7 +18,11 @@ func NewAggregatedURRID(id uint32) *IE {
 func (i *IE) AggregatedURRID() (uint32, error) {
 	switch i.Type {
 	case AggregatedURRID:
-		return i.ValueAsUint32()
+		if len(i.Payload) < 4 {
+			return 0, io.ErrUnexpectedEOF
+		}
+
+		return binary.BigEndian.Uint32(i.Payload[0:4]), nil
 	case AggregatedURRs:
 		ies, err := i.AggregatedURRs()
 		if err != nil {

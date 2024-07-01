@@ -1,4 +1,4 @@
-// Copyright 2019-2024 go-pfcp authors. All rights reserved.
+// Copyright 2019-2022 go-pfcp authors. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
@@ -13,9 +13,13 @@ func NewQFI(qfi uint8) *IE {
 
 // QFI returns QFI in uint8 if the type of IE matches.
 func (i *IE) QFI() (uint8, error) {
+	if len(i.Payload) < 1 {
+		return 0, io.ErrUnexpectedEOF
+	}
+
 	switch i.Type {
 	case QFI:
-		return i.ValueAsUint8()
+		return i.Payload[0], nil
 	case DownlinkDataServiceInformation:
 		if len(i.Payload) < 2 {
 			return 0, io.ErrUnexpectedEOF
