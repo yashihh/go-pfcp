@@ -212,7 +212,7 @@ const (
 	CreatedBridgeInfoForTSC                                          uint16 = 195
 	DSTTPortNumber                                                   uint16 = 196
 	NWTTPortNumber                                                   uint16 = 197
-	TSNBridgeID                                                      uint16 = 198
+	FGUserPlaneNode                                                  uint16 = 198
 	TSCManagementInformationWithinSessionModificationRequest         uint16 = 199
 	TSCManagementInformationWithinSessionModificationResponse        uint16 = 200
 	TSCManagementInformationWithinSessionReportRequest               uint16 = 201

@@ -9,36 +9,36 @@ import (
 	"net"
 )
 
-// NewTSNBridgeID creates a new TSNBridgeID IE.
-func NewTSNBridgeID(mac net.HardwareAddr) *IE {
+// NewFGUserPlaneNode creates a new FGUserPlaneNode IE.
+func NewFGUserPlaneNode(mac net.HardwareAddr) *IE {
 	if mac == nil {
-		return New(TSNBridgeID, []byte{0x00})
+		return New(FGUserPlaneNode, []byte{0x00})
 	}
 
 	b := make([]byte, 7)
 	b[0] = 0x01
 	copy(b[1:7], mac)
-	return New(TSNBridgeID, b)
+	return New(FGUserPlaneNode, b)
 }
 
 // HasMAC reports whether an IE has MAC bit.
 func (i *IE) HasMAC() bool {
 	switch i.Type {
-	case TSNBridgeID:
+	case FGUserPlaneNode:
 		return has1stBit(i.Payload[0])
 	default:
 		return false
 	}
 }
 
-// TSNBridgeID returns TSNBridgeID in net.HardwareAddr if the type of IE matches.
-func (i *IE) TSNBridgeID() (net.HardwareAddr, error) {
+// FGUserPlaneNode returns FGUserPlaneNode in net.HardwareAddr if the type of IE matches.
+func (i *IE) FGUserPlaneNode() (net.HardwareAddr, error) {
 	if len(i.Payload) < 1 {
 		return nil, io.ErrUnexpectedEOF
 	}
 
 	switch i.Type {
-	case TSNBridgeID:
+	case FGUserPlaneNode:
 		if has1stBit(i.Payload[0]) {
 			if len(i.Payload) < 7 {
 				return nil, io.ErrUnexpectedEOF
@@ -52,8 +52,8 @@ func (i *IE) TSNBridgeID() (net.HardwareAddr, error) {
 			return nil, err
 		}
 		for _, x := range ies {
-			if x.Type == TSNBridgeID {
-				return x.TSNBridgeID()
+			if x.Type == FGUserPlaneNode {
+				return x.FGUserPlaneNode()
 			}
 		}
 		return nil, ErrIENotFound

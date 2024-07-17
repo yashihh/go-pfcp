@@ -72,7 +72,7 @@ func TestSessionModificationResponse(t *testing.T) {
 				ie.NewCreatedBridgeInfoForTSC(
 					ie.NewDSTTPortNumber(0xffffffff),
 					ie.NewNWTTPortNumber(0xffffffff),
-					ie.NewTSNBridgeID(mac1),
+					ie.NewFGUserPlaneNode(mac1),
 				),
 				ie.NewATSSSControlParameters(
 					ie.NewMPTCPParameters(
@@ -250,7 +250,7 @@ func TestSessionModificationResponse(t *testing.T) {
 				ie.NewCreatedBridgeInfoForTSC(
 					ie.NewDSTTPortNumber(0xffffffff),
 					ie.NewNWTTPortNumber(0xffffffff),
-					ie.NewTSNBridgeID(mac1),
+					ie.NewFGUserPlaneNode(mac1),
 				),
 				ie.NewATSSSControlParameters(
 					ie.NewMPTCPParameters(

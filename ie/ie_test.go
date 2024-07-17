@@ -2698,7 +2698,7 @@ func TestIEs(t *testing.T) {
 			ie.NewCreatedBridgeInfoForTSC(
 				ie.NewDSTTPortNumber(0xffffffff),
 				ie.NewNWTTPortNumber(0xffffffff),
-				ie.NewTSNBridgeID(mac1),
+				ie.NewFGUserPlaneNode(mac1),
 			),
 			[]byte{
 				0x00, 0xc3, 0x00, 0x1b,
@@ -2715,12 +2715,12 @@ func TestIEs(t *testing.T) {
 			ie.NewNWTTPortNumber(0xffffffff),
 			[]byte{0x00, 0xc5, 0x00, 0x04, 0xff, 0xff, 0xff, 0xff},
 		}, {
-			"TSNBridgeID/MAC",
-			ie.NewTSNBridgeID(mac1),
+			"FGUserPlaneNode/MAC",
+			ie.NewFGUserPlaneNode(mac1),
 			[]byte{0x00, 0xc6, 0x00, 0x07, 0x01, 0x12, 0x34, 0x56, 0x78, 0x90, 0x01},
 		}, {
-			"TSNBridgeID/None",
-			ie.NewTSNBridgeID(nil),
+			"FGUserPlaneNode/None",
+			ie.NewFGUserPlaneNode(nil),
 			[]byte{0x00, 0xc6, 0x00, 0x01, 0x00},
 		}, {
 			"TSCManagementInformationWithinSessionModificationRequest",
