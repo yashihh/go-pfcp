@@ -15,9 +15,9 @@ func NewFGUserPlaneNode(mac net.HardwareAddr) *IE {
 		return New(FGUserPlaneNode, []byte{0x00})
 	}
 
-	b := make([]byte, 7)
+	b := make([]byte, 9)
 	b[0] = 0x01
-	copy(b[1:7], mac)
+	copy(b[1:9], mac)
 	return New(FGUserPlaneNode, b)
 }
 
@@ -43,7 +43,7 @@ func (i *IE) FGUserPlaneNode() (net.HardwareAddr, error) {
 			if len(i.Payload) < 7 {
 				return nil, io.ErrUnexpectedEOF
 			}
-			return net.HardwareAddr(i.Payload[1:7]), nil
+			return net.HardwareAddr(i.Payload[1:9]), nil
 		}
 		return nil, nil
 	case CreatedBridgeInfoForTSC:

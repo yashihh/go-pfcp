@@ -104,7 +104,7 @@ func TestUint32IEs(t *testing.T) {
 			structured: ie.NewCreatedBridgeInfoForTSC(
 				ie.NewDSTTPortNumber(0xffffffff),
 				ie.NewNWTTPortNumber(0xffffffff),
-				ie.NewFGUserPlaneNode("12:34:56:78:90:01"),
+				ie.NewFGUserPlaneNode(mac1),
 			),
 			decoded:     0xffffffff,
 			decoderFunc: func(i *ie.IE) (uint32, error) { return i.DSTTPortNumber() },
