@@ -40,7 +40,7 @@ type SessionModificationRequest struct {
 	UpdateMAR                      []*ie.IE
 	CreateMAR                      []*ie.IE
 	NodeID                         *ie.IE
-	TSCManagementInformation       *ie.IE
+	TSCManagementInformation       []*ie.IE
 	RemoveSRR                      []*ie.IE
 	CreateSRR                      []*ie.IE
 	UpdateSRR                      []*ie.IE
@@ -123,7 +123,7 @@ func NewSessionModificationRequest(mp, fo uint8, seid uint64, seq uint32, pri ui
 		case ie.NodeID:
 			m.NodeID = i
 		case ie.TSCManagementInformationWithinSessionModificationRequest:
-			m.TSCManagementInformation = i
+			m.TSCManagementInformation = append(m.TSCManagementInformation, i)
 		case ie.RemoveSRR:
 			m.RemoveSRR = append(m.RemoveSRR, i)
 		case ie.CreateSRR:
@@ -341,7 +341,7 @@ func (m *SessionModificationRequest) MarshalTo(b []byte) error {
 		}
 		offset += i.MarshalLen()
 	}
-	if i := m.TSCManagementInformation; i != nil {
+	for _, i := range m.TSCManagementInformation {
 		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
 			return err
 		}
@@ -496,7 +496,7 @@ func (m *SessionModificationRequest) UnmarshalBinary(b []byte) error {
 		case ie.NodeID:
 			m.NodeID = i
 		case ie.TSCManagementInformationWithinSessionModificationRequest:
-			m.TSCManagementInformation = i
+			m.TSCManagementInformation = append(m.TSCManagementInformation, i)
 		case ie.RemoveSRR:
 			m.RemoveSRR = append(m.RemoveSRR, i)
 		case ie.CreateSRR:
@@ -612,7 +612,7 @@ func (m *SessionModificationRequest) MarshalLen() int {
 	if i := m.NodeID; i != nil {
 		l += i.MarshalLen()
 	}
-	if i := m.TSCManagementInformation; i != nil {
+	for _, i := range m.TSCManagementInformation {
 		l += i.MarshalLen()
 	}
 	for _, i := range m.RemoveSRR {

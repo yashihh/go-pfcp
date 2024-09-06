@@ -24,7 +24,7 @@ type SessionModificationResponse struct {
 	FailedRuleID                      *ie.IE
 	AdditionalUsageReportsInformation *ie.IE
 	CreatedUpdatedTrafficEndpoint     []*ie.IE
-	CreatedBridgeInfoForTSC           *ie.IE
+	TSCManagementInformation          []*ie.IE
 	ATSSSControlParameters            *ie.IE
 	UpdatedPDR                        []*ie.IE
 	PacketRateStatusReport            []*ie.IE
@@ -61,8 +61,8 @@ func NewSessionModificationResponse(mp, fo uint8, seid uint64, seq uint32, pri u
 			m.AdditionalUsageReportsInformation = i
 		case ie.CreatedTrafficEndpoint:
 			m.CreatedUpdatedTrafficEndpoint = append(m.CreatedUpdatedTrafficEndpoint, i)
-		case ie.CreatedBridgeInfoForTSC:
-			m.CreatedBridgeInfoForTSC = i
+		case ie.TSCManagementInformationWithinSessionModificationResponse:
+			m.TSCManagementInformation = append(m.TSCManagementInformation, i)
 		case ie.ATSSSControlParameters:
 			m.ATSSSControlParameters = i
 		case ie.UpdatedPDR:
@@ -150,7 +150,7 @@ func (m *SessionModificationResponse) MarshalTo(b []byte) error {
 		}
 		offset += i.MarshalLen()
 	}
-	if i := m.CreatedBridgeInfoForTSC; i != nil {
+	for _, i := range m.TSCManagementInformation {
 		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
 			return err
 		}
@@ -234,8 +234,8 @@ func (m *SessionModificationResponse) UnmarshalBinary(b []byte) error {
 			m.AdditionalUsageReportsInformation = i
 		case ie.CreatedTrafficEndpoint:
 			m.CreatedUpdatedTrafficEndpoint = append(m.CreatedUpdatedTrafficEndpoint, i)
-		case ie.CreatedBridgeInfoForTSC:
-			m.CreatedBridgeInfoForTSC = i
+		case ie.TSCManagementInformationWithinSessionModificationResponse:
+			m.TSCManagementInformation = append(m.TSCManagementInformation, i)
 		case ie.ATSSSControlParameters:
 			m.ATSSSControlParameters = i
 		case ie.UpdatedPDR:
@@ -281,7 +281,7 @@ func (m *SessionModificationResponse) MarshalLen() int {
 	for _, i := range m.CreatedUpdatedTrafficEndpoint {
 		l += i.MarshalLen()
 	}
-	if i := m.CreatedBridgeInfoForTSC; i != nil {
+	for _, i := range m.TSCManagementInformation {
 		l += i.MarshalLen()
 	}
 	if i := m.ATSSSControlParameters; i != nil {
